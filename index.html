@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>열의 이동 리듬 게임 · 전도 대류 복사</title>
+<style>
+:root{
+  --stage:#171338; --stage2:#241c56;
+  --paper:#FFFBF2; --ink:#221c3d;
+  --beam:#FF2E88;
+  --cond:#FF7A2F; --conv:#2FB6D9; --rad:#F5B01E;
+  --dim:#9990c9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:radial-gradient(120% 80% at 50% -10%, var(--stage2) 0%, var(--stage) 60%), var(--stage);
+  color:#fff;
+  font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic','맑은 고딕',sans-serif;
+  display:flex; flex-direction:column; min-height:100%;
+  -webkit-font-smoothing:antialiased;
+}
+header{display:flex; align-items:baseline; gap:20px; padding:14px 22px 8px; flex-wrap:wrap}
+h1{font-size:22px; font-weight:800; letter-spacing:-.02em}
+h1 span{color:var(--dim); font-weight:600}
+.stat{font-size:36px; font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:-.03em}
+.stat small{font-size:17px; color:var(--dim); font-weight:600}
+.stat.rep{color:var(--beam)}
+#reps-dots{display:flex; gap:6px; align-items:center}
+.dot{width:11px; height:11px; border-radius:99px; background:rgba(255,255,255,.18)}
+.dot.done{background:var(--beam)}
+.spacer{margin-left:auto}
+
+#learn{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:4px 22px 26px}
+.lcount{font-size:17px; color:var(--dim); font-weight:700; font-variant-numeric:tabular-nums}
+#lcard{
+  background:var(--paper); border-radius:20px; padding:20px 26px 16px;
+  width:min(1060px,96vw); cursor:pointer; text-align:center;
+  box-shadow:0 22px 64px rgba(0,0,0,.38);
+}
+#lsvg{width:100%; height:auto; aspect-ratio:120/90; display:block; max-height:46vh; margin:0 auto}
+#lcap{color:var(--ink); font-size:clamp(26px,7vw,90px); font-weight:800; margin-top:8px; letter-spacing:-.04em; line-height:1.12}
+#lans{margin-top:14px; min-height:96px; display:flex; flex-direction:column; align-items:center; gap:9px; opacity:0; transition:opacity .2s}
+#lans.on{opacity:1}
+#lbadge{font-size:clamp(30px,4.6vw,62px); font-weight:800; color:#fff; padding:6px 52px; border-radius:99px; letter-spacing:-.03em; line-height:1.18}
+.lnav{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center}
+.lnav .hint{font-size:13.5px; color:var(--dim); font-weight:600; width:100%; text-align:center; margin-top:2px}
+#tolearn{background:rgba(255,255,255,.07)}
+#step{font-size:15px; font-weight:700; color:var(--beam); letter-spacing:-.01em}
+main{flex:1; display:flex; align-items:center; justify-content:center; padding:6px 22px 16px}
+#grid{display:grid; gap:14px; width:100%; max-width:1500px; transition:opacity .25s}
+#grid.resting{opacity:.45}
+.card{
+  position:relative; background:var(--paper); border-radius:14px;
+  padding:12px 10px 10px; text-align:center; border:3px solid transparent;
+  transition:transform .09s ease, box-shadow .09s ease, border-color .09s ease;
+}
+.card svg{width:100%; height:auto; display:block; aspect-ratio:120/90}
+.cap{color:var(--ink); font-size:clamp(16px,1.9vw,27px); font-weight:800; margin-top:8px; line-height:1.22; letter-spacing:-.03em}
+.card.hit{
+  border-color:var(--beam);
+  box-shadow:0 0 0 6px rgba(255,46,136,.28), 0 0 38px rgba(255,46,136,.55);
+  transform:scale(1.05); z-index:2;
+}
+@keyframes pop{
+  0%{ transform:scale(1.13); box-shadow:0 0 0 11px rgba(255,46,136,.5), 0 0 60px rgba(255,46,136,.85); }
+  100%{ transform:scale(1.05); box-shadow:0 0 0 6px rgba(255,46,136,.28), 0 0 38px rgba(255,46,136,.55); }
+}
+.card.hit.pulse{ animation:pop .19s cubic-bezier(.2,.9,.3,1); }
+.ans{
+  position:absolute; left:50%; bottom:-13px; transform:translateX(-50%);
+  font-size:18px; font-weight:800; color:#fff; padding:4px 17px;
+  border-radius:99px; white-space:nowrap; opacity:0; transition:opacity .18s;
+}
+.card.revealed .ans{opacity:1}
+.t-conduction .ans{background:var(--cond)}
+.t-convection .ans{background:var(--conv)}
+.t-radiation .ans{background:var(--rad); color:#3a2a00}
+
+footer{
+  background:rgba(0,0,0,.26); border-top:1px solid rgba(255,255,255,.09);
+  padding:12px 22px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+}
+button{
+  font-family:inherit; font-size:15px; font-weight:700; cursor:pointer;
+  border:none; border-radius:10px; padding:11px 20px; letter-spacing:-.01em;
+  background:rgba(255,255,255,.11); color:#fff; transition:background .12s;
+}
+button:hover{background:rgba(255,255,255,.19)}
+button:focus-visible{outline:3px solid var(--beam); outline-offset:2px}
+#play{background:var(--beam); padding:11px 32px; font-size:16px}
+#play:hover{background:#ff4f9c}
+.speed{display:flex; align-items:center; gap:10px}
+.speed label{font-size:13px; color:var(--dim); font-weight:600}
+input[type=range]{width:180px; accent-color:var(--beam)}
+.presets{display:flex; gap:5px}
+.presets button{padding:8px 13px; font-size:13px; background:rgba(255,255,255,.07)}
+.presets button.on{background:var(--beam)}
+select{font-family:inherit; font-size:14px; font-weight:600; padding:10px 12px; border-radius:10px; border:none; background:rgba(255,255,255,.11); color:#fff}
+select option{background:#241c56}
+.toggles{display:flex; gap:14px; margin-left:auto; align-items:center; flex-wrap:wrap}
+.toggles label{display:flex; align-items:center; gap:6px; font-size:13.5px; color:#e6e1ff; font-weight:600; cursor:pointer}
+input[type=checkbox]{width:17px; height:17px; accent-color:var(--beam); cursor:pointer}
+
+#countin{
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background:rgba(23,19,56,.86); z-index:50;
+  font-size:min(30vw,260px); font-weight:800; letter-spacing:-.05em;
+}
+#countin.on{display:flex}
+#flash{
+  position:fixed; left:50%; top:15%; transform:translateX(-50%);
+  background:var(--beam); padding:14px 34px; border-radius:14px;
+  font-size:27px; font-weight:800; z-index:40; opacity:0;
+  transition:opacity .2s; pointer-events:none;
+  box-shadow:0 14px 44px rgba(0,0,0,.45);
+}
+#flash.on{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  .card{transition:none}.card.hit{transform:none}.card.hit.pulse{animation:none}
+}
+@media (max-width:820px){
+  .stat{font-size:23px} footer{gap:10px} input[type=range]{width:120px}
+  .toggles{margin-left:0; width:100%}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>열의 이동 <span>전도 · 대류 · 복사</span></h1>
+  <div id="step">1단계 · 카드로 익히기</div>
+  <div id="gamestats" style="display:none; align-items:baseline; gap:20px; flex:1">
+    <div class="stat"><span id="rnum">1</span><small> / <span id="rtot">5</span> 라운드</small></div>
+    <div class="stat rep"><span id="repnum">1</span><small> / <span id="reptot">4</span> 회차</small></div>
+    <div id="reps-dots"></div>
+    <div class="spacer"></div>
+    <div class="stat"><span id="bpmv">120</span><small> BPM</small></div>
+  </div>
+</header>
+
+<section id="learn">
+  <div class="lcount"><span id="lnum">1</span> / <span id="ltot">12</span></div>
+  <div id="lcard">
+    <svg id="lsvg" viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="lcap"></div>
+    <div id="lans"><div id="lbadge"></div></div>
+  </div>
+  <div class="lnav">
+    <button id="lprev">◀ 이전</button>
+    <button id="lnext" style="background:var(--beam); padding:11px 30px">정답 보기</button>
+    <button id="togame">리듬 게임 시작 ▶</button>
+    <button id="lfull">전체 화면</button>
+    <div class="hint">카드를 누르면 정답이 나오고, 한 번 더 누르면 다음 카드로 넘어갑니다 · 방향키로도 이동</div>
+  </div>
+</section>
+
+<main style="display:none"><div id="grid"></div></main>
+
+<footer style="display:none">
+  <button id="tolearn">◀ 카드 다시 보기</button>
+  <button id="play">시작</button>
+  <button id="shuffle">카드 섞기</button>
+
+  <div class="speed">
+    <label for="bpm">속도</label>
+    <input type="range" id="bpm" min="60" max="240" step="5" value="120">
+  </div>
+  <div class="presets">
+    <button data-bpm="90">느리게</button>
+    <button data-bpm="120" class="on">보통</button>
+    <button data-bpm="150">빠르게</button>
+    <button data-bpm="185">폭주</button>
+  </div>
+
+  <select id="count">
+    <option value="4">카드 4장</option>
+    <option value="6">카드 6장</option>
+    <option value="8" selected>카드 8장</option>
+    <option value="12">카드 12장</option>
+  </select>
+  <select id="reps">
+    <option value="2">2회 반복</option>
+    <option value="3">3회 반복</option>
+    <option value="4" selected>4회 반복</option>
+    <option value="5">5회 반복</option>
+    <option value="6">6회 반복</option>
+  </select>
+  <select id="rest">
+    <option value="4">쉼 4박</option>
+    <option value="8" selected>쉼 8박</option>
+    <option value="16">쉼 16박</option>
+    <option value="manual">쉼: 직접 시작</option>
+  </select>
+  <select id="order">
+    <option value="seq">순서대로 이동</option>
+    <option value="rand">무작위로 이동</option>
+  </select>
+
+  <div class="toggles">
+    <label><input type="checkbox" id="beat" checked> 비트</label>
+    <label><input type="checkbox" id="adlib" checked> 추임새</label>
+    <label><input type="checkbox" id="scaffold" checked> 1회차는 정답 보기</label>
+    <label><input type="checkbox" id="accel" checked> 회차마다 빨라지기</label>
+    <label><input type="checkbox" id="gap" checked> 카드 4장마다 쉬어 가기</label>
+    <button id="full">전체 화면</button>
+  </div>
+</footer>
+
+<div id="countin"></div>
+<div id="flash"></div>
+
+<script>
+/* ═══ 그림 ═══════════════════════════════════════════════ */
+const A={
+ up:(x,y,c)=>`<path d="M${x} ${y} l0 -9 M${x} ${y-9} l-3.2 3.6 M${x} ${y-9} l3.2 3.6" stroke="${c}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`,
+ down:(x,y,c)=>`<path d="M${x} ${y} l0 9 M${x} ${y+9} l-3.2 -3.6 M${x} ${y+9} l3.2 -3.6" stroke="${c}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`,
+ wave:(x,y,c)=>`<path d="M${x} ${y} q4 -4 8 0 q4 4 8 0 q4 -4 8 0" stroke="${c}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`
+};
+const F='#FF7A2F', B='#3E8FD9', Y='#F5B01E', G='#4a4a55', S='#c9ccd6';
+/* 손가락: 윤곽선 위에 살색을 덧그려 손가락 경계가 살아나게 */
+function FG(x1,x2,y,w,curve){
+  const d='M'+x2+' '+y+' Q'+((x1+x2)/2)+' '+(y+curve)+' '+x1+' '+(y+curve);
+  return '<path d="'+d+'" stroke="#BF7749" stroke-width="'+(w+3)+'" fill="none" stroke-linecap="round"/>'
+       + '<path d="'+d+'" stroke="#F5C9A0" stroke-width="'+w+'" fill="none" stroke-linecap="round"/>';
+}
+
+const ITEMS=[
+{t:'conduction',cap:'프라이팬에 달걀 굽기',svg:`
+<rect x="14" y="54" width="66" height="9" rx="4.5" fill="${G}"/>
+<rect x="78" y="55.5" width="28" height="6" rx="3" fill="#6b6b78"/>
+<ellipse cx="47" cy="52" rx="15" ry="6" fill="#FFF3D0"/><circle cx="47" cy="51" r="5" fill="#FFC53D"/>
+<path d="M34 78 q3 -10 7 -2 q4 -9 7 -1 q3 -8 6 1 q-9 8 -20 2z" fill="${F}"/>
+${A.up(38,52,F)}${A.up(56,52,F)}`},
+{t:'conduction',cap:'뜨거운 국에 담근 쇠숟가락',svg:`
+<path d="M26 48 h56 l-6 30 h-44z" fill="#8d8d9c"/>
+<ellipse cx="54" cy="49" rx="28" ry="5" fill="#E8A33D"/>
+<rect x="66" y="12" width="6" height="40" rx="3" fill="${S}" transform="rotate(14 69 32)"/>
+<ellipse cx="63" cy="52" rx="7" ry="4" fill="${S}"/>
+${A.up(78,40,F)}${A.up(74,26,F)}`},
+{t:'conduction',cap:'다리미로 옷 다리기',svg:`
+<path d="M28 36 h40 a14 14 0 0 1 14 14 v6 h-54z" fill="#5B7CFA"/>
+<rect x="34" y="26" width="26" height="8" rx="4" fill="#33407a"/>
+<path d="M22 58 h66 l-7 9 h-52z" fill="${S}"/>
+<rect x="12" y="70" width="96" height="10" rx="4" fill="#FFE4BE"/>
+${A.down(38,58,F)}${A.down(58,58,F)}${A.down(78,58,F)}`},
+{t:'conduction',cap:'뜨거운 컵을 손으로 잡기',svg:`
+<path d="M28 28 h30 l-4 48 h-22z" fill="#fff" stroke="${G}" stroke-width="2.6" stroke-linejoin="round"/>
+<path d="M30.5 34 h13" stroke="#C98A5E" stroke-width="4" stroke-linecap="round"/>
+<path d="M34 22 q5 -6 0 -12 M46 22 q5 -6 0 -12" stroke="#b9c4d6" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+<path d="M74 44 h34 a6 6 0 0 1 6 6 v20 a6 6 0 0 1 -6 6 h-34z" fill="#F5C9A0" stroke="#BF7749" stroke-width="2" stroke-linejoin="round"/>
+<rect x="60" y="40" width="28" height="39" rx="13" fill="#F5C9A0" stroke="#BF7749" stroke-width="2"/>
+${FG(52,72,72,8,-1)}${FG(47,72,63,9,0)}${FG(45,72,54,9.5,0)}${FG(48,71,45,9,1)}
+<path d="M28 87 h36" stroke="${F}" stroke-width="3.4" stroke-linecap="round"/>
+<path d="M76 87 l-11 -6 v12z" fill="${F}"/>`},
+
+{t:'convection',cap:'끓는 물 속의 움직임',svg:`
+<path d="M24 40 h72 l-7 36 h-58z" fill="#8d8d9c"/>
+<path d="M28 44 h64 l-6 30 h-52z" fill="#BFE3F5"/>
+<circle cx="42" cy="56" r="3" fill="#fff"/><circle cx="70" cy="62" r="2.4" fill="#fff"/>
+${A.up(60,68,F)}${A.up(60,54,F)}${A.down(38,54,B)}${A.down(82,54,B)}
+<path d="M40 82 q3 -9 7 -2 q4 -8 7 -1 q3 -7 6 1 q-9 7 -20 2z" fill="${F}"/>`},
+{t:'convection',cap:'방 안을 도는 에어컨 바람',svg:`
+<rect x="12" y="14" width="44" height="15" rx="4" fill="#EAF6FB" stroke="${B}" stroke-width="2.4"/>
+<path d="M18 26 h32" stroke="${B}" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M14 82 h94" stroke="#5b558f" stroke-width="2.6" stroke-linecap="round"/>
+${A.down(34,34,B)}${A.down(34,52,B)}
+<path d="M40 70 q22 8 44 -2" stroke="${B}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+${A.up(92,64,F)}${A.up(92,48,F)}`},
+{t:'convection',cap:'난로가 데우는 방 공기',svg:`
+<rect x="44" y="50" width="32" height="28" rx="4" fill="#E85B3A"/>
+<path d="M50 58 h20 M50 66 h20" stroke="#ffd9a0" stroke-width="2.6" stroke-linecap="round"/>
+${A.up(60,46,F)}${A.up(60,30,F)}
+<path d="M60 18 q22 0 26 22" stroke="${F}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+${A.down(86,44,B)}${A.down(86,60,B)}
+<path d="M14 82 h94" stroke="#5b558f" stroke-width="2.6" stroke-linecap="round"/>`},
+{t:'convection',cap:'욕조 물의 위쪽이 더 따뜻함',svg:`
+<path d="M18 38 h84 v22 a14 14 0 0 1 -14 14 h-56 a14 14 0 0 1 -14 -14z" fill="#EAF6FB" stroke="${B}" stroke-width="2.6"/>
+<rect x="22" y="42" width="76" height="12" rx="3" fill="#FFC9A8"/>
+${A.up(44,64,F)}${A.down(76,52,B)}
+<path d="M32 30 q5 -7 0 -13 M46 30 q5 -7 0 -13" stroke="#b9c4d6" stroke-width="2.4" fill="none" stroke-linecap="round"/>`},
+
+{t:'radiation',cap:'내리쬐는 따뜻한 햇살',svg:`
+<circle cx="28" cy="24" r="14" fill="${Y}"/>
+<g stroke="${Y}" stroke-width="3" stroke-linecap="round">
+<path d="M28 4 v-1"/><path d="M46 24 h2"/><path d="M42 10 l2 -2"/><path d="M42 38 l3 3"/><path d="M12 40 l-2 2"/></g>
+<path d="M44 34 l30 30 M52 28 l30 30 M38 44 l28 26" stroke="${Y}" stroke-width="3" stroke-linecap="round"/>
+<circle cx="82" cy="52" r="8" fill="#F0BE93"/>
+<path d="M74 64 h16 l3 16 h-22z" fill="#5BB27E"/>
+<path d="M12 82 h96" stroke="#5b558f" stroke-width="2.6" stroke-linecap="round"/>`},
+{t:'radiation',cap:'모닥불 앞에서 손 쬐기',svg:`
+<path d="M28 46 q5 -18 12 -4 q7 -16 12 -2 q5 -14 10 3 q-14 22 -34 3z" fill="${F}"/>
+<path d="M34 58 q10 -10 20 -3 q9 -9 14 2" fill="#FFD24D"/>
+<rect x="24" y="66" width="46" height="7" rx="3" fill="#8a5a35" transform="rotate(-6 47 69)"/>
+${A.wave(74,44,F)}${A.wave(74,54,F)}${A.wave(74,64,F)}
+<path d="M96 44 q14 4 12 14 q-6 10 -12 6z" fill="#F0BE93"/>`},
+{t:'radiation',cap:'전기난로 앞이 따뜻함',svg:`
+<rect x="16" y="26" width="34" height="46" rx="6" fill="#3b3550" stroke="#6b6390" stroke-width="2.4"/>
+<path d="M24 38 h18 M24 48 h18 M24 58 h18" stroke="#FF5A3C" stroke-width="4" stroke-linecap="round"/>
+<rect x="18" y="74" width="30" height="5" rx="2.5" fill="#6b6390"/>
+${A.wave(56,36,F)}${A.wave(56,48,F)}${A.wave(56,60,F)}${A.wave(80,42,F)}${A.wave(80,54,F)}`},
+{t:'radiation',cap:'전구에서 나오는 열',svg:`
+<circle cx="60" cy="40" r="18" fill="#FFE9A8" stroke="${Y}" stroke-width="2.6"/>
+<path d="M52 56 h16 v6 h-16z" fill="${S}"/><path d="M54 64 h12 v6 h-12z" fill="#8d8d9c"/>
+<path d="M54 40 q6 -10 12 0" stroke="${F}" stroke-width="2.6" fill="none"/>
+<g stroke="${Y}" stroke-width="3" stroke-linecap="round">
+<path d="M60 12 v-6"/><path d="M86 40 h6"/><path d="M34 40 h-6"/><path d="M80 20 l4 -4"/><path d="M40 20 l-4 -4"/></g>
+${A.wave(84,58,F)}${A.wave(20,58,F)}`}
+];
+const LABEL={conduction:'전도',convection:'대류',radiation:'복사'};
+const BADGE={conduction:'#FF7A2F',convection:'#2FB6D9',radiation:'#F5B01E'};
+
+/* ═══ 상태 ═══════════════════════════════════════════════ */
+const $=s=>document.querySelector(s);
+const grid=$('#grid'), countin=$('#countin'), flash=$('#flash');
+let cards=[], pos=-1, running=false;
+let baseBpm=120, bpm=120, round=1, rep=1, reps=4, totalRounds=5;
+let cardCount=8, orderMode='seq', beatN=0, countdown=0, randSteps=0;
+const BEATS_PER_CARD=1;      /* 한 그림에 한 박 */
+let pending=0;               /* 현재 카드에 남은 박 */
+let restBeats=0;             /* 회차 사이 쉬는 박 */
+const CARDS_PER_GROUP=4;               /* 카드 4장 진행 후 쉼 */
+let barCards=0, gapLeft=0;   /* 묶음 안에서 지나간 카드 / 남은 쉬는 박 */
+
+/* ═══ 소리 ═══════════════════════════════════════════════ */
+let ac=null, noiseBuf=null;
+function initAudio(){
+  if(ac) return;
+  ac=new (window.AudioContext||window.webkitAudioContext)();
+  const n=Math.floor(ac.sampleRate*0.5), buf=ac.createBuffer(1,n,ac.sampleRate), d=buf.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=Math.random()*2-1;
+  noiseBuf=buf;
+}
+function noise(t,dur,hz,type,vol){
+  const s=ac.createBufferSource(); s.buffer=noiseBuf;
+  const f=ac.createBiquadFilter(); f.type=type; f.frequency.value=hz;
+  const g=ac.createGain();
+  g.gain.setValueAtTime(vol,t);
+  g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+  s.connect(f); f.connect(g); g.connect(ac.destination);
+  s.start(t); s.stop(t+dur);
+}
+function kick(t){
+  const o=ac.createOscillator(), g=ac.createGain();
+  o.frequency.setValueAtTime(165,t);
+  o.frequency.exponentialRampToValueAtTime(46,t+0.13);
+  g.gain.setValueAtTime(0.95,t);
+  g.gain.exponentialRampToValueAtTime(0.001,t+0.3);
+  o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+0.32);
+}
+function snare(t){
+  noise(t,0.17,1400,'highpass',0.5);
+  const o=ac.createOscillator(), g=ac.createGain();
+  o.type='triangle'; o.frequency.setValueAtTime(190,t);
+  g.gain.setValueAtTime(0.32,t); g.gain.exponentialRampToValueAtTime(0.001,t+0.11);
+  o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+0.12);
+}
+function hat(t,open){ noise(t, open?0.19:0.045, 8200,'highpass', open?0.16:0.2); }
+function horn(t){
+  [370,555,740].forEach((f,i)=>{
+    const o=ac.createOscillator(), g=ac.createGain();
+    o.type='sawtooth'; o.frequency.value=f;
+    g.gain.setValueAtTime(0.001,t);
+    g.gain.linearRampToValueAtTime(0.13/(i+1),t+0.05);
+    g.gain.setValueAtTime(0.13/(i+1),t+0.4);
+    g.gain.exponentialRampToValueAtTime(0.001,t+0.6);
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+0.62);
+  });
+}
+/* 한 박 = 카드 하나. 4박 단위 붐뱁 패턴 */
+function groove(t,b){
+  if(!$('#beat').checked) return;
+  const m=b%4;
+  if(m===0){ kick(t); hat(t,false); }
+  else if(m===1){ hat(t,false); }
+  else if(m===2){ snare(t); hat(t,false); }
+  else { kick(t+0.02); hat(t,true); }
+}
+/* 추임새: 한 번에 음을 올릴 수 없어 두 토막으로 나눠 뒤를 높고 길게 뽑는다 */
+const ADLIB={
+  go:   [['렛츠',1.3,1.15],['고!',1.95,1.0]],
+  more: [['한 번',1.45,1.7],['더!',1.95,1.5]],
+  last: [['마지막',1.4,1.6],['한 번!',1.95,1.5]],
+  good: [['좋아!',1.9,1.0]],
+  yes:  [['예!',1.95,1.0]],
+  ok:   [['오케이!',1.85,1.1]],
+  yeah: [['Yeah!',1.9,1.0]],
+  hey:  [['Hey!',1.95,1.05]],
+  come: [['Come on!',1.85,1.15]]
+};
+const ADLIB_POOL=['go','good','yes','ok','yeah','hey','come'];
+function adlib(key){
+  if(!$('#adlib').checked || !window.speechSynthesis) return;
+  const parts = ADLIB[key] || ADLIB[ADLIB_POOL[Math.floor(Math.random()*ADLIB_POOL.length)]];
+  speechSynthesis.cancel();
+  parts.forEach(function(pt){
+    const u=new SpeechSynthesisUtterance(pt[0]);
+    u.lang=/[가-힣]/.test(pt[0])?'ko-KR':'en-US';
+    u.pitch=pt[1]; u.rate=pt[2]; u.volume=1;
+    speechSynthesis.speak(u);
+  });
+}
+
+/* ═══ 카드 ═══════════════════════════════════════════════ */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function pick(n){
+  const by={conduction:[],convection:[],radiation:[]};
+  ITEMS.forEach(i=>by[i.t].push(i));
+  const per=Math.max(1,Math.round(n/3));
+  let out=[];
+  for(const k in by) out=out.concat(shuffle(by[k]).slice(0,per));
+  out=shuffle(out).slice(0,n);
+  while(out.length<n) out.push(ITEMS[Math.floor(Math.random()*ITEMS.length)]);
+  return out;
+}
+function render(newCards){
+  if(newCards) cards=pick(cardCount);
+  const cols=cardCount<=4?cardCount:(cardCount===6?3:4);
+  grid.style.gridTemplateColumns='repeat('+cols+',1fr)';
+  grid.innerHTML=cards.map(c=>`
+    <div class="card t-${c.t}">
+      <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg">${c.svg}</svg>
+      <div class="cap">${c.cap}</div>
+      <div class="ans">${LABEL[c.t]}</div>
+    </div>`).join('');
+  pos=-1; pending=0; barCards=0; gapLeft=0;
+  applyScaffold();
+}
+function applyScaffold(){
+  const show = $('#scaffold').checked && rep===1;
+  [...grid.children].forEach(e=>e.classList.toggle('revealed', show));
+}
+function drawDots(){
+  let h='';
+  for(let i=0;i<reps;i++) h+='<div class="dot'+(i<rep-1?' done':'')+'"></div>';
+  $('#reps-dots').innerHTML=h;
+  $('#repnum').textContent=rep; $('#reptot').textContent=reps;
+  $('#rnum').textContent=round; $('#rtot').textContent=totalRounds;
+}
+
+/* ═══ 스케줄러 ═══════════════════════════════════════════ */
+let nextTime=0, queue=[];
+function scheduler(){
+  if(!running) return;
+  while(nextTime < ac.currentTime + 0.12){
+    if(countdown>0){ kick(nextTime); hat(nextTime,false); }
+    else groove(nextTime, beatN);
+    queue.push(nextTime);
+    nextTime += 60/bpm;
+    beatN++;
+  }
+  setTimeout(scheduler,25);
+}
+function visualLoop(){
+  if(!running) return;
+  while(queue.length && queue[0] <= ac.currentTime){ queue.shift(); step(); }
+  requestAnimationFrame(visualLoop);
+}
+
+function step(){
+  if(countdown>0){
+    countdown--;
+    countin.textContent = countdown>0 ? countdown : '!';
+    if(countdown===0){ setTimeout(()=>countin.classList.remove('on'),120); beatN=0; adlib('go'); }
+    return;
+  }
+  /* 회차 사이 쉬는 시간 */
+  if(restBeats>0){
+    restBeats--;
+    hold(rep+'회차 준비' + (restBeats>0 ? ' · '+restBeats : ''));
+    if(restBeats===0){
+      hide(); grid.classList.remove('resting'); applyScaffold();
+    }
+    return;
+  }
+
+  const els=[...grid.children];
+
+  /* 묶음 사이 쉼 — 비트만 흐르고 하이라이트는 멈춘다 */
+  if(gapLeft>0){ gapLeft--; return; }
+
+  /* 같은 그림에서 한 박 더 뿅 */
+  if(pending>0 && pos>=0){ pending--; pulse(els[pos]); return; }
+
+  if(pos>=0){
+    els[pos].classList.remove('hit','pulse');
+    if(rep===1) els[pos].classList.add('revealed');   /* 2회차부터는 정답 없음 */
+  }
+  const last=pos;
+
+  let done=false;
+  if(orderMode==='rand'){ randSteps++; if(randSteps>cardCount) done=true; }
+  else if(pos>=els.length-1) done=true;
+
+  if(done){ rollover(); return; }
+
+  /* 카드 4장을 넘겼으면 같은 길이(8박)만큼 비트만 흐른다 */
+  if($('#gap').checked && barCards>=CARDS_PER_GROUP){
+    barCards=0;
+    gapLeft=CARDS_PER_GROUP*BEATS_PER_CARD-1;   /* 이번 박 포함 8박 */
+    return;
+  }
+
+  if(orderMode==='rand'){
+    do{ pos=Math.floor(Math.random()*els.length); } while(els.length>1 && pos===last);
+  } else pos++;
+  els[pos].classList.add('hit');
+  pulse(els[pos]);
+  pending=BEATS_PER_CARD-1;
+  barCards++;
+}
+function pulse(el){
+  el.classList.remove('pulse');
+  void el.offsetWidth;
+  el.classList.add('pulse');
+}
+
+function rollover(){
+  pos=-1; randSteps=0; pending=0; barCards=0; gapLeft=0;
+  if(rep<reps){
+    rep++;
+    if($('#accel').checked) setBpm(Math.min(240, baseBpm+(rep-1)*12), true);
+    drawDots();
+    grid.classList.add('resting');
+    adlib(rep===reps?'last':'more');
+    const r=$('#rest').value;
+    if(r==='manual'){
+      running=false; $('#play').textContent='시작';
+      hold(rep+'회차 준비 — 시작을 누르세요');
+      restBeats=0; return;
+    }
+    restBeats=+r;
+    hold(rep+'회차 준비 · '+restBeats);
+    return;
+  }
+  [...grid.children].forEach(e=>e.classList.add('revealed'));
+  running=false; $('#play').textContent='시작';
+  horn(ac.currentTime);
+  if(round>=totalRounds){ say('모든 라운드 끝! 잘했어요'); adlib('good'); round=1; }
+  else { round++; say(round+'라운드 준비'); }
+  rep=1; setBpm(baseBpm,true); drawDots();
+  setTimeout(function(){ hide(); render(true); },1700);
+}
+
+function hold(t){ clearTimeout(say._h); flash.textContent=t; flash.classList.add('on'); }
+function say(t){ flash.textContent=t; flash.classList.add('on'); clearTimeout(say._h); say._h=setTimeout(hide,1100); }
+function hide(){ flash.classList.remove('on'); }
+
+/* ═══ 진행 ═══════════════════════════════════════════════ */
+function start(){
+  initAudio(); ac.resume();
+  running=true; $('#play').textContent='멈춤';
+  hide(); grid.classList.remove('resting'); applyScaffold();
+  countdown=3; countin.textContent='3'; countin.classList.add('on');
+  queue=[]; nextTime=ac.currentTime+0.12;
+  scheduler(); visualLoop();
+}
+function stop(){
+  running=false; $('#play').textContent='시작';
+  countin.classList.remove('on');
+  pos=-1; pending=0; restBeats=0; barCards=0; gapLeft=0;
+  grid.classList.remove('resting');
+  [...grid.children].forEach(e=>e.classList.remove('hit','pulse'));
+  if(window.speechSynthesis) speechSynthesis.cancel();
+}
+function markPresets(){
+  document.querySelectorAll('.presets button').forEach(b=>b.classList.toggle('on',+b.dataset.bpm===baseBpm));
+}
+function setBpm(v,keepBase){
+  bpm=v; $('#bpmv').textContent=v;
+  if(!keepBase){ baseBpm=v; $('#bpm').value=v; }
+  markPresets();
+}
+function resetRound(){ stop(); rep=1; setBpm(baseBpm,true); drawDots(); render(true); }
+
+/* ═══ 이벤트 ═════════════════════════════════════════════ */
+$('#play').onclick=function(){ running?stop():start(); };
+$('#shuffle').onclick=resetRound;
+$('#bpm').oninput=function(e){
+  baseBpm=+e.target.value;
+  setBpm(baseBpm + ($('#accel').checked ? (rep-1)*12 : 0), true);
+  markPresets();
+};
+document.querySelectorAll('.presets button').forEach(function(b){
+  b.onclick=function(){ setBpm(+b.dataset.bpm); };
+});
+$('#count').onchange=function(e){ cardCount=+e.target.value; resetRound(); };
+$('#reps').onchange=function(e){ reps=+e.target.value; rep=1; drawDots(); applyScaffold(); };
+$('#order').onchange=function(e){ orderMode=e.target.value; randSteps=0; };
+$('#scaffold').onchange=applyScaffold;
+$('#full').onclick=function(){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); };
+document.addEventListener('keydown',function(e){
+  if(e.target.matches('input,select')) return;
+  if(e.key==='f'||e.key==='F'){ $('#full').click(); return; }
+  if(mode==='learn'){
+    if(e.code==='Space'||e.key==='ArrowRight'||e.key==='Enter'){ e.preventDefault(); lnext(); }
+    if(e.key==='ArrowLeft'){ e.preventDefault(); lprev(); }
+    return;
+  }
+  if(e.code==='Space'){ e.preventDefault(); running?stop():start(); }
+  if(e.key==='r'||e.key==='R') resetRound();
+});
+
+/* ═══ 1단계 · 카드 학습 ═══════════════════════════════ */
+let mode='learn', li=0, lshown=false;
+
+function renderLearn(){
+  const it=ITEMS[li];
+  $('#lsvg').innerHTML=it.svg;
+  $('#lcap').textContent=it.cap;
+  $('#lbadge').textContent=LABEL[it.t];
+  $('#lbadge').style.background=BADGE[it.t];
+  $('#lbadge').style.color = it.t==='radiation' ? '#3a2a00' : '#fff';
+  $('#lans').classList.toggle('on', lshown);
+  $('#lnum').textContent=li+1;
+  $('#ltot').textContent=ITEMS.length;
+  $('#lnext').textContent = !lshown ? '정답 보기'
+      : (li<ITEMS.length-1 ? '다음 카드 \u25B6' : '리듬 게임 시작 \u25B6');
+  $('#lprev').disabled = (li===0 && !lshown);
+}
+function lnext(){
+  if(!lshown){ lshown=true; renderLearn(); return; }
+  if(li<ITEMS.length-1){ li++; lshown=false; renderLearn(); }
+  else setMode('game');
+}
+function lprev(){
+  if(lshown){ lshown=false; renderLearn(); return; }
+  if(li>0){ li--; lshown=true; renderLearn(); }
+}
+function setMode(m){
+  mode=m;
+  const game = m==='game';
+  $('#learn').style.display = game?'none':'flex';
+  document.querySelector('main').style.display = game?'flex':'none';
+  document.querySelector('footer').style.display = game?'flex':'none';
+  $('#gamestats').style.display = game?'flex':'none';
+  $('#step').textContent = game ? '2단계 \u00B7 리듬 게임' : '1단계 \u00B7 카드로 익히기';
+  if(!game) stop();
+  else { round=1; rep=1; setBpm(baseBpm,true); drawDots(); render(true); }
+}
+$('#lcard').onclick=lnext;
+$('#lnext').onclick=lnext;
+$('#lprev').onclick=lprev;
+$('#togame').onclick=function(){ setMode('game'); };
+$('#lfull').onclick=function(){ $('#full').click(); };
+$('#tolearn').onclick=function(){ li=0; lshown=false; renderLearn(); setMode('learn'); };
+
+drawDots(); render(true); renderLearn();
+</script>
+</body>
+</html>
