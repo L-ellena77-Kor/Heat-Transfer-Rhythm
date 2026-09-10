@@ -170,7 +170,6 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 body.in-fullscreen .fs-btn svg .enter{display:none}
 body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
 @media (max-width:640px){.fs-btn{display:none}}
-@media (min-width:641px){#play .hud{padding-right:68px}}
 /* 크롬북/와이드 레이아웃 */
 @media (min-width:900px){
   .wrap{padding:40px 32px 140px}
@@ -180,7 +179,6 @@ body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
   .back p{font-size:.93rem}
   .speed-row{gap:12px}
   .speed label span{padding:16px 8px}
-  #play{max-width:100%}
   .hud{padding:16px 20px 10px}
   .pads{gap:14px;padding:16px 20px calc(20px + env(safe-area-inset-bottom))}
   .tcard{width:min(380px,42vw)}
@@ -315,22 +313,29 @@ body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
 .rank-emblem svg{width:92px;height:92px;display:block}
 .rank-name{font-family:var(--display);font-size:1.9rem;line-height:1.1;margin:0 0 4px;color:var(--tc)}
 
-/* 넓은 화면(크롬북·교실 모니터): 카드 4장이 화면을 꽉 채우도록 */
+/* 넓은 화면(크롬북·교실 모니터): 카드 2장씩 2줄, 글씨는 화면 가로·세로 중 작은 쪽에 맞춰 커짐 */
 @media (min-width:900px){
-  #study .wrap{max-width:min(1680px,94vw);padding-top:clamp(24px,3vh,40px);padding-bottom:120px}
-  #study .title{font-size:clamp(2.6rem,4vw,4.2rem)}
-  #study .lede{font-size:clamp(1rem,1.2vw,1.35rem);margin-bottom:clamp(16px,2.4vh,28px)}
+  #study .wrap{max-width:min(1500px,94vw);padding-top:clamp(18px,2.6vh,36px);padding-bottom:110px}
+  #study .who{margin-bottom:8px}
+  #study .title{font-size:clamp(2rem,min(3.2vw,5.6vh),3.6rem)}
+  #study .lede{font-size:clamp(1rem,min(1.2vw,2.1vh),1.35rem);margin:6px 0 clamp(10px,1.8vh,22px)}
+  #study .study-bar{display:flex;align-items:center;gap:24px;margin-bottom:clamp(10px,1.8vh,20px)}
+  #study .study-bar .page-tabs{order:-1;margin:0;flex:none}
+  #study .study-bar .progress{flex:1;margin:0}
   #study .progress span{font-size:clamp(.95rem,1vw,1.2rem)}
-  #study .page-tabs{gap:10px;margin-bottom:clamp(12px,2vh,22px)}
-  #study .page-tab{font-size:clamp(.95rem,1vw,1.2rem);padding:10px 22px}
-  #study .card-page.active{gap:clamp(16px,1.4vw,28px)}
-  #study .face{min-height:clamp(240px,50vh,640px);padding:clamp(18px,1.7vw,34px);gap:clamp(10px,1.2vh,18px);border-radius:18px}
-  #study .face .emoji{font-size:clamp(2.4rem,3.6vw,4.6rem)}
-  #study .front p{font-size:clamp(1.15rem,1.75vw,2.2rem);line-height:1.5}
-  #study .hint{font-size:clamp(.9rem,1vw,1.2rem)}
-  #study .back .type{font-size:clamp(1.8rem,2.4vw,3rem)}
-  #study .back p{font-size:clamp(1.15rem,1.7vw,2.1rem);line-height:1.55;font-weight:500}
+  #study .page-tab{font-size:clamp(.95rem,1vw,1.2rem);padding:9px 20px}
+  #study .card-page.active{grid-template-columns:repeat(2,1fr);gap:clamp(14px,1.4vw,26px)}
+  #study .face{min-height:clamp(170px,29.5vh,420px);padding:clamp(16px,min(1.8vw,3vh),34px) clamp(18px,2vw,40px);gap:clamp(6px,1vh,14px);border-radius:18px}
+  #study .face .emoji{font-size:clamp(2.2rem,min(3.4vw,6vh),4.4rem)}
+  #study .front p{font-size:clamp(1.3rem,min(2.3vw,4vh),3rem);line-height:1.45}
+  #study .hint{font-size:clamp(.9rem,min(1.1vw,1.9vh),1.3rem)}
+  #study .back .type{font-size:clamp(1.5rem,min(2.2vw,3.8vh),2.8rem)}
+  #study .back p{font-size:clamp(1.15rem,min(1.85vw,3.2vh),2.5rem);line-height:1.5;font-weight:500}
+  /* 게임 화면: 가운데 적당한 폭으로 */
+  #play{max-width:1040px;border-inline:1px solid rgba(74,53,133,.45)}
+  #play .note-body{font-size:clamp(1.3rem,min(2vw,3.2vh),1.9rem)}
 }
+@media (min-width:641px) and (max-width:1180px){#play .hud{padding-right:68px}}
 @media (prefers-reduced-motion:reduce){
   .card-inner,.tcard{transition:none}
   .judge.show{animation:fade .6s forwards}
@@ -369,11 +374,13 @@ body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
     <h1 class="title">열의 이동 리듬 카드</h1>
     <p class="lede">카드 12장을 눌러 뒤집어 보세요. 모두 확인하면 리듬 게임이 열려요.</p>
 
-    <div class="progress">
-      <span id="progLabel">확인한 카드 0 / 12</span>
-      <div class="meter" aria-hidden="true"><i id="progFill"></i></div>
+    <div class="study-bar">
+      <div class="progress">
+        <span id="progLabel">확인한 카드 0 / 12</span>
+        <div class="meter" aria-hidden="true"><i id="progFill"></i></div>
+      </div>
+      <div class="page-tabs" id="pageTabs"></div>
     </div>
-    <div class="page-tabs" id="pageTabs"></div>
     <div id="cardPages"></div>
     <p class="copy">© 엘레나</p>
   </div>
