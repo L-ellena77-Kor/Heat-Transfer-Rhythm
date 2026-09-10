@@ -57,7 +57,7 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 .hint{margin-top:auto;font-size:clamp(.85rem,1.2vw,1rem);color:var(--muted)}
 .card.seen .hint{color:#8FE3B0}
 .back .type{font-family:var(--display);font-size:clamp(1.8rem,3vw,2.4rem);color:var(--c);line-height:1}
-.back p{margin:0;font-size:clamp(.92rem,1.4vw,1.1rem);line-height:1.65}
+.back p{margin:0;font-size:clamp(1rem,1.6vw,1.2rem);line-height:1.6;font-weight:500}
 
 /* 하단 버튼 */
 .dock{position:fixed;left:0;right:0;bottom:0;padding:24px 18px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(rgba(22,12,48,0),var(--night) 40%);display:flex;justify-content:center;z-index:5}
@@ -315,6 +315,22 @@ body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
 .rank-emblem svg{width:92px;height:92px;display:block}
 .rank-name{font-family:var(--display);font-size:1.9rem;line-height:1.1;margin:0 0 4px;color:var(--tc)}
 
+/* 넓은 화면(크롬북·교실 모니터): 카드 4장이 화면을 꽉 채우도록 */
+@media (min-width:900px){
+  #study .wrap{max-width:min(1680px,94vw);padding-top:clamp(24px,3vh,40px);padding-bottom:120px}
+  #study .title{font-size:clamp(2.6rem,4vw,4.2rem)}
+  #study .lede{font-size:clamp(1rem,1.2vw,1.35rem);margin-bottom:clamp(16px,2.4vh,28px)}
+  #study .progress span{font-size:clamp(.95rem,1vw,1.2rem)}
+  #study .page-tabs{gap:10px;margin-bottom:clamp(12px,2vh,22px)}
+  #study .page-tab{font-size:clamp(.95rem,1vw,1.2rem);padding:10px 22px}
+  #study .card-page.active{gap:clamp(16px,1.4vw,28px)}
+  #study .face{min-height:clamp(240px,50vh,640px);padding:clamp(18px,1.7vw,34px);gap:clamp(10px,1.2vh,18px);border-radius:18px}
+  #study .face .emoji{font-size:clamp(2.4rem,3.6vw,4.6rem)}
+  #study .front p{font-size:clamp(1.15rem,1.75vw,2.2rem);line-height:1.5}
+  #study .hint{font-size:clamp(.9rem,1vw,1.2rem)}
+  #study .back .type{font-size:clamp(1.8rem,2.4vw,3rem)}
+  #study .back p{font-size:clamp(1.15rem,1.7vw,2.1rem);line-height:1.55;font-weight:500}
+}
 @media (prefers-reduced-motion:reduce){
   .card-inner,.tcard{transition:none}
   .judge.show{animation:fade .6s forwards}
