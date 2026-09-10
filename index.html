@@ -34,15 +34,8 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 .copy{margin-top:40px;color:var(--muted);font-size:.8rem;opacity:.7}
 
 /* 개념 열쇠 */
-.legend-set{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:30px}
-.legend{background:var(--plum);border-radius:16px;padding:14px 16px 16px;border-top:6px solid var(--c)}
-.legend h2{font-family:var(--display);font-weight:400;font-size:1.7rem;margin:0 0 6px;color:var(--c)}
-.legend p{margin:0;font-size:.97rem;line-height:1.6}
 @media (max-width:640px){
-  .legend-set{grid-template-columns:1fr}
-  .legend{display:flex;gap:16px;align-items:center;border-top:0;border-left:6px solid var(--c)}
-  .legend h2{margin:0;flex:none}
-}
+      }
 
 /* 진행 온도계 */
 .progress{display:flex;align-items:center;gap:14px;margin:0 0 16px}
@@ -51,20 +44,20 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 .meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5B3FA8,#C23B8C 50%,#FF7A2B 80%,#FFE27A);transition:width .4s}
 
 /* 카드 */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
 @media (max-width:480px){.grid{grid-template-columns:1fr 1fr;gap:10px}}
 .card{perspective:900px;cursor:pointer;border-radius:14px}
 .card-inner{display:grid;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.3,.7,.2,1)}
 .card.flipped .card-inner{transform:rotateY(180deg)}
-.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;padding:16px 14px 14px;display:flex;flex-direction:column;gap:8px;min-height:190px}
+.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;padding:16px 14px 14px;display:flex;flex-direction:column;gap:8px;min-height:clamp(200px,22vw,280px)}
 .front{background:var(--plum);border:1px solid var(--line)}
 .back{background:var(--plum-2);border:2px solid var(--c);transform:rotateY(180deg)}
-.face .emoji{font-size:2rem;line-height:1}
-.front p{margin:0;font-size:.98rem;line-height:1.5;font-weight:600}
-.hint{margin-top:auto;font-size:.8rem;color:var(--muted)}
+.face .emoji{font-size:clamp(2rem,3vw,3rem);line-height:1}
+.front p{margin:0;font-size:clamp(1rem,1.6vw,1.25rem);line-height:1.55;font-weight:600}
+.hint{margin-top:auto;font-size:clamp(.85rem,1.2vw,1rem);color:var(--muted)}
 .card.seen .hint{color:#8FE3B0}
-.back .type{font-family:var(--display);font-size:1.8rem;color:var(--c);line-height:1}
-.back p{margin:0;font-size:.88rem;line-height:1.6}
+.back .type{font-family:var(--display);font-size:clamp(1.8rem,3vw,2.4rem);color:var(--c);line-height:1}
+.back p{margin:0;font-size:clamp(.92rem,1.4vw,1.1rem);line-height:1.65}
 
 /* 하단 버튼 */
 .dock{position:fixed;left:0;right:0;bottom:0;padding:24px 18px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(rgba(22,12,48,0),var(--night) 40%);display:flex;justify-content:center;z-index:5}
@@ -94,7 +87,7 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 
 /* 게임 화면 */
 #play.active{display:flex}
-#play{flex-direction:column;height:100vh;height:100dvh;max-width:700px;margin:0 auto;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+#play{flex-direction:column;height:100vh;height:100dvh;width:100%;max-width:100%;margin:0 auto;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .hud{display:grid;grid-template-columns:1.3fr 1fr 1fr auto;align-items:end;gap:8px;padding:calc(12px + env(safe-area-inset-top)) 14px 8px}
 .hud span{display:block;font-size:.72rem;color:var(--muted)}
 .hud b{font-size:clamp(1.4rem,3vw,1.9rem);font-variant-numeric:tabular-nums}
@@ -104,8 +97,8 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 .zone{position:absolute;left:3%;right:3%;bottom:10px;height:72px;border-radius:14px;background:rgba(255,226,122,.06);border:1px dashed rgba(255,226,122,.28);z-index:1}
 .hitline{position:absolute;left:3%;right:3%;bottom:44px;height:4px;border-radius:2px;background:#FFE27A;box-shadow:0 0 18px #FFB347;z-index:2}
 .note{position:absolute;left:5%;right:5%;top:0;z-index:3;will-change:transform;pointer-events:none}
-.note-body{background:#1E1240;border:3px solid #5B3FA8;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:clamp(1rem,2.5vw,1.3rem);line-height:1.35}
-.note-body .e{font-size:1.6rem;flex:none}
+.note-body{background:#1E1240;border:3px solid #5B3FA8;border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:clamp(1.1rem,2.8vw,1.55rem);line-height:1.4}
+.note-body .e{font-size:clamp(2rem,3vw,2.8rem);flex:none}
 .note-body .ans{margin-left:auto;flex:none;font-family:var(--display);font-weight:400;font-size:1.25rem;color:#1A0E33;background:var(--c);padding:4px 10px;border-radius:8px}
 .note-body.hit{border-color:#FFE27A!important;animation:hit .4s ease-out forwards}
 @keyframes hit{0%{background:#FFE27A;color:#1A0E33}100%{background:#FFE27A;color:#1A0E33;opacity:0;transform:scale(1.08)}}
@@ -117,7 +110,7 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 @keyframes pop{0%{opacity:0;transform:translateY(8px) scale(.8)}20%{opacity:1;transform:translateY(0) scale(1.08)}70%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
 
 .pads{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px 12px calc(16px + env(safe-area-inset-bottom))}
-.pad{position:relative;border:0;border-radius:16px;background:var(--c);color:#1A0E33;font-family:var(--display);font-weight:400;font-size:clamp(1.6rem,4.5vw,2.8rem);padding:clamp(24px,4vh,40px) 0 clamp(22px,3.5vh,36px);box-shadow:0 7px 0 var(--d);cursor:pointer;touch-action:manipulation;-webkit-touch-callout:none;transition:transform .06s,box-shadow .06s}
+.pad{position:relative;border:0;border-radius:16px;background:var(--c);color:#1A0E33;font-family:var(--display);font-weight:400;font-size:clamp(2rem,5vw,3.5rem);padding:clamp(28px,5vh,52px) 0 clamp(24px,4vh,44px);box-shadow:0 7px 0 var(--d);cursor:pointer;touch-action:manipulation;-webkit-touch-callout:none;transition:transform .06s,box-shadow .06s}
 .pad small{position:absolute;top:7px;left:11px;font-family:var(--body);font-size:.75rem;font-weight:800;opacity:.5}
 .pad.down{transform:translateY(5px);box-shadow:0 2px 0 var(--d)}
 .pad.reveal{animation:reveal .35s 2}
@@ -152,6 +145,22 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 .actions{display:grid;gap:10px}
 
 
+
+/* 카드 페이지네이션 */
+.page-tabs{display:flex;gap:8px;margin:0 0 16px;flex-wrap:wrap}
+.page-tab{background:var(--plum);border:2px solid var(--line);border-radius:10px;
+  color:var(--muted);font-family:var(--body);font-weight:700;font-size:.95rem;
+  padding:8px 18px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.page-tab.active{background:var(--plum-2);border-color:var(--ink);color:var(--ink)}
+.page-tab.done{border-color:#8FE3B0;color:#8FE3B0}
+.page-tab.done.active{background:rgba(143,227,176,.15)}
+.card-page{display:none}
+.card-page.active{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media (max-width:480px){.card-page.active{grid-template-columns:1fr 1fr;gap:10px}.page-tab{padding:7px 11px;font-size:.86rem}.page-tabs{gap:6px}}
+.card-page .card{display:flex;flex-direction:column}
+.card-page .card-inner{flex:1}
+@media (min-width:900px){.card-page.active{grid-template-columns:repeat(4,1fr);gap:20px}}
+
 /* 전체화면 버튼 */
 .fs-btn{position:fixed;top:calc(12px + env(safe-area-inset-top));right:14px;z-index:20;
   width:40px;height:40px;border-radius:10px;background:var(--plum);border:0;cursor:pointer;
@@ -161,19 +170,17 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 body.in-fullscreen .fs-btn svg .enter{display:none}
 body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
 @media (max-width:640px){.fs-btn{display:none}}
+@media (min-width:641px){#play .hud{padding-right:68px}}
 /* 크롬북/와이드 레이아웃 */
 @media (min-width:900px){
   .wrap{padding:40px 32px 140px}
-  .legend-set{gap:16px}
-  .legend{padding:18px 20px 20px}
-  .legend h2{font-size:2rem}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:16px}
+        .grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
   .face{min-height:215px;padding:18px 16px 16px}
   .front p{font-size:1.05rem}
   .back p{font-size:.93rem}
   .speed-row{gap:12px}
   .speed label span{padding:16px 8px}
-  #play{max-width:780px}
+  #play{max-width:100%}
   .hud{padding:16px 20px 10px}
   .pads{gap:14px;padding:16px 20px calc(20px + env(safe-area-inset-bottom))}
   .tcard{width:min(380px,42vw)}
@@ -335,7 +342,7 @@ body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
       <p class="err" id="loginErr" role="alert"></p>
       <button class="cta" type="button" id="loginBtn">입장하기</button>
     </div>
-    <p class="copy">© 오효선</p>
+    <p class="copy">© 엘레나</p>
   </div>
 </section>
 
@@ -344,20 +351,15 @@ body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
   <div class="wrap">
     <div class="who"><b id="whoName"></b><button class="text-btn" id="changeUser">이름 바꾸기</button></div>
     <h1 class="title">열의 이동 리듬 카드</h1>
-    <p class="lede">전도, 대류, 복사 카드 12장을 눌러 뒤집어 보세요. 모두 확인하면 리듬 게임이 열려요.</p>
-
-    <div class="legend-set">
-      <div class="legend" style="--c:var(--cond)"><h2>전도</h2><p>주로 고체에서, 입자의 운동이 이웃한 입자에 차례로 전달되어 열이 이동해요.</p></div>
-      <div class="legend" style="--c:var(--conv)"><h2>대류</h2><p>액체나 기체에서, 입자가 직접 이동하며 열이 이동해요.</p></div>
-      <div class="legend" style="--c:var(--rad)"><h2>복사</h2><p>물질의 도움 없이 열이 직접 이동해요.</p></div>
-    </div>
+    <p class="lede">카드 12장을 눌러 뒤집어 보세요. 모두 확인하면 리듬 게임이 열려요.</p>
 
     <div class="progress">
       <span id="progLabel">확인한 카드 0 / 12</span>
       <div class="meter" aria-hidden="true"><i id="progFill"></i></div>
     </div>
-    <div class="grid" id="grid"></div>
-    <p class="copy">© 오효선</p>
+    <div class="page-tabs" id="pageTabs"></div>
+    <div id="cardPages"></div>
+    <p class="copy">© 엘레나</p>
   </div>
   <div class="dock"><button class="cta" id="toReady" disabled>카드 12장을 더 확인하면 게임이 열려요</button></div>
 </main>
@@ -389,7 +391,7 @@ body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
     </fieldset>
     <p class="kbd-tip">키보드로도 할 수 있어요. 1 2 3 또는 J K L 키가 전도, 대류, 복사예요. 스페이스 바를 누르면 잠시 멈춰요.</p>
     <button class="cta" id="startBtn">시작하기</button>
-    <p class="copy">© 오효선</p>
+    <p class="copy">© 엘레나</p>
   </div>
 </section>
 
@@ -455,7 +457,7 @@ body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
       <button class="cta" id="againBtn">다시 도전하기</button>
       <button class="ghost" id="studyBtn">카드 다시 공부하기</button>
     </div>
-    <p class="copy">© 오효선</p>
+    <p class="copy">© 엘레나</p>
   </div>
 </section>
 
@@ -535,33 +537,60 @@ function show(id){
 
 /* ---------------- 1. 카드 공부 ---------------- */
 const seen = new Set();
+const PAGE_SIZE = 4;
 function renderCards(){
-  const grid = $('#grid');
-  CARDS.forEach(c=>{
-    const T = TYPES[c.type];
-    const el = document.createElement('div');
-    el.className = 'card';
-    el.setAttribute('role','button');
-    el.setAttribute('tabindex','0');
-    el.setAttribute('aria-pressed','false');
-    el.style.setProperty('--c', `var(${T.v})`);
-    el.innerHTML = `<div class="card-inner">
-        <div class="face front"><span class="emoji" aria-hidden="true">${c.emoji}</span><p>${c.text}</p><span class="hint">눌러서 정답 보기</span></div>
-        <div class="face back"><span class="type">${T.name}</span><p>${c.why}</p></div>
-      </div>`;
-    const flip = ()=>{
-      const on = el.classList.toggle('flipped');
-      el.setAttribute('aria-pressed', on ? 'true' : 'false');
-      if(!seen.has(c.id)){
-        seen.add(c.id);
-        el.classList.add('seen');
-        el.querySelector('.hint').textContent = '✓ 확인함';
-        updateProgress();
-      }
-    };
-    el.addEventListener('click', flip);
-    el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); flip(); } });
-    grid.appendChild(el);
+  const tabsEl = $('#pageTabs'), pagesEl = $('#cardPages');
+  tabsEl.innerHTML=''; pagesEl.innerHTML='';
+  const pages = [];
+  for(let i=0;i<CARDS.length;i+=PAGE_SIZE) pages.push(CARDS.slice(i,i+PAGE_SIZE));
+  pages.forEach((pg,pi)=>{
+    const tab = document.createElement('button');
+    tab.className = 'page-tab' + (pi===0?' active':'');
+    tab.textContent = `${pi*PAGE_SIZE+1}–${Math.min((pi+1)*PAGE_SIZE,CARDS.length)}번 카드`;
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('.page-tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.card-page').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      pagesEl.children[pi].classList.add('active');
+    });
+    tabsEl.appendChild(tab);
+    const pageDiv = document.createElement('div');
+    pageDiv.className = 'card-page' + (pi===0?' active':'');
+    pg.forEach(c=>{
+      const T = TYPES[c.type];
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.setAttribute('role','button');
+      el.setAttribute('tabindex','0');
+      el.setAttribute('aria-pressed','false');
+      el.style.setProperty('--c', `var(${T.v})`);
+      el.dataset.id = c.id;
+      el.innerHTML = `<div class="card-inner">
+          <div class="face front"><span class="emoji" aria-hidden="true">${c.emoji}</span><p>${c.text}</p><span class="hint">눌러서 정답 보기</span></div>
+          <div class="face back"><span class="type">${T.name}</span><p>${c.why}</p></div>
+        </div>`;
+      const flip = ()=>{
+        const on = el.classList.toggle('flipped');
+        el.setAttribute('aria-pressed', on ? 'true' : 'false');
+        if(!seen.has(c.id)){
+          seen.add(c.id);
+          el.classList.add('seen');
+          el.querySelector('.hint').textContent = '✓ 확인함';
+          updateProgress();
+          // 이 페이지 카드 다 봤으면 탭 표시
+          const allSeen = pg.every(x=>seen.has(x.id));
+          if(allSeen){ tab.classList.add('done'); }
+          // 마지막 카드 확인하면 다음 탭으로 자동 이동
+          if(allSeen && pi < pages.length-1){
+            setTimeout(()=>{ tabsEl.children[pi+1].click(); }, 400);
+          }
+        }
+      };
+      el.addEventListener('click', flip);
+      el.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); flip(); } });
+      pageDiv.appendChild(el);
+    });
+    pagesEl.appendChild(pageDiv);
   });
 }
 function updateProgress(){
@@ -893,7 +922,7 @@ function doLogin(){
   const changed = user.ban!==ban || user.no!==no || user.name!==name;
   Object.assign(user,{ban,no,name});
   if(changed){   // 다른 학생이 들어오면 카드 학습부터 다시
-    seen.clear(); $('#grid').innerHTML=''; renderCards(); updateProgress();
+    seen.clear(); renderCards(); updateProgress();
     G.best = {}; G.lastResult = null;
   }
   $('#whoName').textContent = `${ban}반 ${no}번 ${name}`;
