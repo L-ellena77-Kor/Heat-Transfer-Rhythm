@@ -52,7 +52,8 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 .face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;padding:16px 14px 14px;display:flex;flex-direction:column;gap:8px;min-height:clamp(200px,22vw,280px)}
 .front{background:var(--plum);border:1px solid var(--line)}
 .back{background:var(--plum-2);border:2px solid var(--c);transform:rotateY(180deg)}
-.face .emoji{font-size:clamp(2rem,3vw,3rem);line-height:1}
+.face .emoji{font-size:clamp(2.6rem,4vw,3.6rem);line-height:1;display:block}
+.emoji .ic,.note-body .e .ic{width:1.15em;height:1.15em;display:block}
 .front p{margin:0;font-size:clamp(1rem,1.6vw,1.25rem);line-height:1.55;font-weight:600}
 .hint{margin-top:auto;font-size:clamp(.85rem,1.2vw,1rem);color:var(--muted)}
 .card.seen .hint{color:#8FE3B0}
@@ -136,6 +137,7 @@ button:focus-visible,[role=button]:focus-visible,input:focus-visible+span{outlin
 .review{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:10px}
 .rv{display:flex;gap:12px;background:var(--plum);border-radius:14px;padding:14px;border-left:6px solid var(--c)}
 .rv .emoji{font-size:1.7rem;line-height:1}
+.rv .emoji .ic{width:1.15em;height:1.15em;display:block}
 .rv p{margin:0 0 6px;line-height:1.5}
 .rv .t{font-weight:700}
 .rv .a{font-size:.9rem;color:var(--muted)}
@@ -326,7 +328,7 @@ body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
   #study .page-tab{font-size:clamp(.95rem,1vw,1.2rem);padding:9px 20px}
   #study .card-page.active{grid-template-columns:repeat(2,1fr);gap:clamp(14px,1.4vw,26px)}
   #study .face{min-height:clamp(170px,29.5vh,420px);padding:clamp(16px,min(1.8vw,3vh),34px) clamp(18px,2vw,40px);gap:clamp(6px,1vh,14px);border-radius:18px}
-  #study .face .emoji{font-size:clamp(2.2rem,min(3.4vw,6vh),4.4rem)}
+  #study .face .emoji{font-size:clamp(2.6rem,min(4vw,6.4vh),5.2rem)}
   #study .front p{font-size:clamp(1.3rem,min(2.3vw,4vh),3rem);line-height:1.45}
   #study .hint{font-size:clamp(.9rem,min(1.1vw,1.9vh),1.3rem)}
   #study .back .type{font-size:clamp(1.5rem,min(2.2vw,3.8vh),2.8rem)}
@@ -491,51 +493,51 @@ body:not(.in-fullscreen) .fs-btn svg .exit{display:none}
    text: 공부 카드 앞면, short: 게임에서 내려오는 문장, why: 카드 뒷면 설명
    ============================================================ */
 const CARDS = [
-  {id:1, type:'conduction', emoji:'🥄',
+  {id:1, type:'conduction', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="i1" x1="29" y1="39" x2="53" y2="11" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FF3B12"/><stop offset=".55" stop-color="#FF8A2B"/><stop offset="1" stop-color="#FFE27A"/></linearGradient></defs><circle cx="53" cy="11" r="9" fill="#FFE27A" opacity=".22"/><path d="M6 28h52v3c0 13-11.6 23-26 23S6 44 6 31z" fill="#EDF2FC"/><path d="M12 32h40c0 10.5-9 18.5-20 18.5S12 42.5 12 32z" fill="#FF9F3D"/><rect x="4" y="26" width="56" height="4.5" rx="2.25" fill="#FFFFFF"/><line x1="29" y1="39" x2="52" y2="12" stroke="url(#i1)" stroke-width="5" stroke-linecap="round"/><ellipse cx="26" cy="42" rx="7.5" ry="5" transform="rotate(-42 26 42)" fill="#FF5A1E" stroke="#FFE6CE" stroke-width="1.8"/></svg>',
    text:'뜨거운 국에 담가 둔 금속 숟가락의 손잡이까지 뜨거워진다.',
    short:'국에 담근 숟가락, 손잡이까지 뜨거워요',
    why:'국에 닿은 부분의 입자 운동이 이웃한 입자에 차례로 전달되어 손잡이까지 열이 이동해요. 입자는 자리를 옮기지 않고 제자리에서 진동해요.'},
-  {id:2, type:'conduction', emoji:'🍳',
+  {id:2, type:'conduction', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><rect x="41" y="28" width="21" height="5" rx="2.5" fill="#7A5B3E"/><path d="M4 27h38v3c0 6-8.5 10-19 10S4 36 4 30z" fill="#3E4250"/><ellipse cx="23" cy="27" rx="19" ry="5.5" fill="#6A7080"/><ellipse cx="23" cy="27.6" rx="15.5" ry="4.4" fill="#22252E"/><ellipse cx="23" cy="28" rx="11" ry="3.6" fill="#FFF6E0"/><ellipse cx="23" cy="27.8" rx="4.2" ry="2.9" fill="#FFC61E"/><g transform="translate(12 44) scale(.72)"><path d="M8 0c4.5 5.5 7 8.5 7 12a7 7 0 0 1-14 0C1 8.5 3.5 5.5 8 0z" fill="#FF8A2B"/></g><g transform="translate(24 42) scale(.95)"><path d="M8 0c4.5 5.5 7 8.5 7 12a7 7 0 0 1-14 0C1 8.5 3.5 5.5 8 0z" fill="#FF6A2B"/><path d="M8 6c2.2 3 3.5 4.6 3.5 6.5a3.5 3.5 0 0 1-7 0C4.5 10.6 5.8 9 8 6z" fill="#FFE27A"/></g></svg>',
    text:'달궈진 프라이팬 위에서 달걀이 익는다.',
    short:'달궈진 프라이팬 위에서 달걀이 익어요',
    why:'뜨거운 프라이팬과 맞닿은 달걀로 입자의 운동이 전달되어 열이 이동해요. 서로 닿아 있는 물체 사이의 열 이동은 전도예요.'},
-  {id:3, type:'conduction', emoji:'🤸',
+  {id:3, type:'conduction', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><rect x="7" y="36" width="4" height="24" rx="2" fill="#6E7A93"/><rect x="53" y="36" width="4" height="24" rx="2" fill="#6E7A93"/><circle cx="32" cy="14" r="11" fill="#F4C08A"/><circle cx="28" cy="12" r="2.1" fill="#2A1B45"/><circle cx="36" cy="12" r="2.1" fill="#2A1B45"/><ellipse cx="32" cy="19" rx="3.2" ry="4.2" fill="#2A1B45"/><rect x="2" y="32" width="60" height="7" rx="3.5" fill="#C6D4EA"/><rect x="2" y="32" width="60" height="3" rx="1.5" fill="#F2F8FF"/><rect x="15.5" y="26.5" width="9.5" height="5.5" rx="2.75" fill="#E8AE79"/><rect x="14" y="31" width="13.2" height="14" rx="4" fill="#F4C08A"/><path d="M17.3 32.5v11.5" stroke="#DFA470" stroke-width="1.3" stroke-linecap="round"/><path d="M20.6 32.5v11.5" stroke="#DFA470" stroke-width="1.3" stroke-linecap="round"/><path d="M23.9 32.5v11.5" stroke="#DFA470" stroke-width="1.3" stroke-linecap="round"/><rect x="38.3" y="26.5" width="9.5" height="5.5" rx="2.75" fill="#E8AE79"/><rect x="36.8" y="31" width="13.2" height="14" rx="4" fill="#F4C08A"/><path d="M40.099999999999994 32.5v11.5" stroke="#DFA470" stroke-width="1.3" stroke-linecap="round"/><path d="M43.39999999999999 32.5v11.5" stroke="#DFA470" stroke-width="1.3" stroke-linecap="round"/><path d="M46.699999999999996 32.5v11.5" stroke="#DFA470" stroke-width="1.3" stroke-linecap="round"/><g stroke="#7FD4FF" stroke-width="2" stroke-linecap="round"><path d="M8 31v9M4 33.5l8 4.5M12 33.5l-8 4.5"/><path d="M56 31v9M52 33.5l8 4.5M60 33.5l-8 4.5"/></g></svg>',
    text:'추운 겨울에 철봉을 잡으면 손이 차갑다.',
    short:'겨울에 철봉을 잡으면 손이 차가워요',
    why:'따뜻한 손의 열이 맞닿은 차가운 철봉으로 전도되어 빠져나가요. 금속은 열을 잘 전도해서 같은 온도의 나무보다 더 차갑게 느껴져요.'},
-  {id:4, type:'conduction', emoji:'👕',
+  {id:4, type:'conduction', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><rect x="1" y="55.5" width="62" height="6.5" rx="3.25" fill="#5B4A9E"/><g transform="translate(0 1.5) rotate(-7 32 42)"><path d="M26 28h12l10 6 6 8-6 6-4-3v11H20V45l-4 3-6-6 6-8 10-6z" fill="#8FD4FF"/><path d="M26 28a6 6 0 0 0 12 0" fill="none" stroke="#5FB3E8" stroke-width="2"/><path d="M22 48c2.5-2 4.5 2 7 0M22 52c2.5-2 4.5 2 7 0" stroke="#4FA3DC" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M27 38c1-6.6 6.4-10 13-10H53v10z" fill="#C3CFE6"/><rect x="25" y="38" width="30" height="5.5" rx="2.5" fill="#6E7A93"/><path d="M34 28c2.3-5.2 7.8-6.5 13.4-5" stroke="#3A3F52" stroke-width="4.8" fill="none" stroke-linecap="round"/></g></svg>',
    text:'뜨거운 다리미로 옷의 주름을 편다.',
    short:'다리미로 옷의 주름을 펴요',
    why:'뜨거운 다리미 바닥이 옷에 직접 닿아 입자의 운동이 전달되면서 열이 옷으로 이동해요.'},
-  {id:5, type:'convection', emoji:'❄️',
+  {id:5, type:'convection', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="5" width="58" height="54" rx="7" fill="#1E1445" stroke="#5B4A9E" stroke-width="2.5"/> <rect x="9" y="11" width="27" height="10" rx="3" fill="#E3EDFF"/> <rect x="9" y="16.5" width="27" height="3.5" rx="1.75" fill="#8FB8E8"/> <path d="M18 25c-4 8-6 14-6 20" stroke="#35C9E6" stroke-width="3.5" fill="none" stroke-linecap="round"/> <polygon points="7.5,43 16.5,43 12,52" fill="#35C9E6"/> <path d="M50 48c3-8 3-14 1-20" stroke="#FF7A2B" stroke-width="3.5" fill="none" stroke-linecap="round"/> <polygon points="46.5,29 55.5,29 51,20" fill="#FF7A2B"/></svg>',
    text:'에어컨은 방의 위쪽에 설치한다.',
    short:'에어컨은 방의 위쪽에 설치해요',
    why:'에어컨에서 나온 차가운 공기는 아래로 내려가고 따뜻한 공기는 위로 올라가요. 공기가 직접 이동하며 순환해서 방 전체가 시원해져요.'},
-  {id:6, type:'convection', emoji:'🔥',
+  {id:6, type:'convection', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="5" width="58" height="54" rx="7" fill="#1E1445" stroke="#5B4A9E" stroke-width="2.5"/> <rect x="9" y="38" width="23" height="18" rx="3" fill="#4A4250"/> <rect x="13" y="43" width="15" height="9" rx="2.5" fill="#FF6A2B"/> <rect x="13" y="43" width="15" height="4" rx="2" fill="#FFC61E"/> <path d="M20 35c-2-7-2-12 0-17" stroke="#FF7A2B" stroke-width="3.5" fill="none" stroke-linecap="round"/> <polygon points="15.5,19 24.5,19 20,10" fill="#FF7A2B"/> <path d="M50 16c3 8 3 16 0 24" stroke="#35C9E6" stroke-width="3.5" fill="none" stroke-linecap="round"/> <polygon points="45.5,39 54.5,39 50,48" fill="#35C9E6"/></svg>',
    text:'난로는 방의 아래쪽에 둔다.',
    short:'난로는 방의 아래쪽에 두어요',
    why:'난로 주변에서 데워진 공기는 위로 올라가고, 위쪽의 차가운 공기는 아래로 내려와요. 이렇게 공기가 순환하며 방 전체가 따뜻해져요.'},
-  {id:7, type:'convection', emoji:'🍲',
+  {id:7, type:'convection', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><rect x="1" y="18" width="9" height="5" rx="2.5" fill="#7C8AA5"/><rect x="54" y="18" width="9" height="5" rx="2.5" fill="#7C8AA5"/><path d="M7 16h50v23c0 5.5-4.5 10-10 10H17c-5.5 0-10-4.5-10-10z" fill="#AEBBD4"/><path d="M11 22h42v17c0 3.9-3.1 7-7 7H18c-3.9 0-7-3.1-7-7z" fill="#2E9BD6"/><g fill="#EAF6FF"><rect x="29.5" y="30" width="5" height="13" rx="2.5"/><polygon points="25.5,30 38.5,30 32,23"/></g><g fill="#CDE8FA"><rect x="17" y="26" width="4" height="11" rx="2"/><polygon points="14,37 24,37 19,43"/><rect x="43" y="26" width="4" height="11" rx="2"/><polygon points="40,37 50,37 45,43"/></g><g transform="translate(16 51) scale(.68)"><path d="M8 0c4.5 5.5 7 8.5 7 12a7 7 0 0 1-14 0C1 8.5 3.5 5.5 8 0z" fill="#FF8A2B"/></g><g transform="translate(25 49) scale(.9)"><path d="M8 0c4.5 5.5 7 8.5 7 12a7 7 0 0 1-14 0C1 8.5 3.5 5.5 8 0z" fill="#FF6A2B"/><path d="M8 6c2.2 3 3.5 4.6 3.5 6.5a3.5 3.5 0 0 1-7 0C4.5 10.6 5.8 9 8 6z" fill="#FFE27A"/></g><g transform="translate(36 51) scale(.68)"><path d="M8 0c4.5 5.5 7 8.5 7 12a7 7 0 0 1-14 0C1 8.5 3.5 5.5 8 0z" fill="#FF8A2B"/></g></svg>',
    text:'냄비 바닥만 가열해도 물 전체가 골고루 데워진다.',
    short:'냄비 바닥만 가열해도 물 전체가 데워져요',
    why:'바닥에서 데워진 물은 위로 올라가고 위쪽의 차가운 물은 아래로 내려와요. 물 입자가 직접 이동하며 순환해 물 전체가 데워져요.'},
-  {id:8, type:'convection', emoji:'🕯️',
-   text:'촛불 위에 둔 바람개비가 저절로 빙글빙글 돈다.',
-   short:'촛불 위의 바람개비가 빙글빙글 돌아요',
-   why:'촛불에 데워진 공기가 위로 올라가면서 바람개비를 돌려요. 기체 입자가 직접 이동하며 열을 옮기는 대류가 일어나요.'},
-  {id:9, type:'radiation', emoji:'☀️',
+  {id:8, type:'convection', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 4A10.5 10.5 0 1 1 32 25A8.4 8.4 0 1 1 32 8.2A6.3 6.3 0 1 1 32 20.8A4.2 4.2 0 1 1 32 11.8" fill="none" stroke="#FFE6A8" stroke-width="3.2" stroke-linecap="round"/><path d="M50 10c3 4.2 3.2 9.8 0.6 14.2" stroke="#FFD23F" stroke-width="2.4" fill="none" stroke-linecap="round"/><polygon points="47.2,23 54.6,23 50.7,29.5" fill="#FFD23F"/><path d="M14 24.2C11.4 19.8 11.6 14.2 14.6 10" stroke="#FFD23F" stroke-width="2.4" fill="none" stroke-linecap="round"/><polygon points="9.6,10.5 17,10.5 13.1,4" fill="#FFD23F"/><rect x="26" y="46" width="12" height="16" rx="3" fill="#F5F1E4"/><rect x="31.2" y="42" width="1.6" height="5" fill="#5A4A3A"/><g transform="translate(27 32) scale(.63)"><path d="M8 0c4.5 5.5 7 8.5 7 12a7 7 0 0 1-14 0C1 8.5 3.5 5.5 8 0z" fill="#FF6A2B"/><path d="M8 6c2.2 3 3.5 4.6 3.5 6.5a3.5 3.5 0 0 1-7 0C4.5 10.6 5.8 9 8 6z" fill="#FFE27A"/></g></svg>',
+   text:'촛불 위에 매단 나선 종이가 저절로 빙글빙글 돈다.',
+   short:'촛불 위의 나선 종이가 빙글빙글 돌아요',
+   why:'촛불에 데워진 공기가 위로 올라가면서 나선 종이를 돌려요. 기체 입자가 직접 이동하며 열을 옮기는 대류가 일어나요.'},
+  {id:9, type:'radiation', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><defs><radialGradient id="i9"><stop offset="0" stop-color="#FFF6C8"/><stop offset="1" stop-color="#FFB020"/></radialGradient></defs> <g fill="#CFE3FF"><circle cx="5" cy="40" r="1.3"/><circle cx="16" cy="55" r="1"/><circle cx="34" cy="8" r="1.2"/><circle cx="59" cy="16" r="1.1"/></g> <g stroke="#FFC61E" stroke-width="2.6" stroke-linecap="round"><path d="M14 2v5M14 30v-5M1 16h5M27 16h-5M5 7l3.5 3.5M23 25l-3.5-3.5M23 7l-3.5 3.5M5 25l3.5-3.5"/></g> <circle cx="14" cy="16" r="9" fill="url(#i9)"/> <g stroke="#FFD23F" stroke-width="2.8" stroke-linecap="round"><path d="M23 23l16 15M27 20l13 12M19 28l13 13"/></g> <circle cx="50" cy="48" r="11" fill="#2E7FD6"/> <path d="M43 43c3 1.5 4.5 3.5 7.5 2.5s4-3 7.5-1M42 51c4 2.5 6.5-1 9.5 1s5.5 0 7-2" stroke="#4CC46A" stroke-width="3" fill="none" stroke-linecap="round"/></svg>',
    text:'태양의 열이 우주 공간을 지나 지구까지 전달된다.',
    short:'태양의 열이 우주를 지나 지구에 와요',
    why:'우주 공간에는 열을 전해 줄 물질이 거의 없어요. 그래도 태양의 열은 물질의 도움 없이 직접 이동하는 복사로 지구에 도착해요.'},
-  {id:10, type:'radiation', emoji:'🏕️',
+  {id:10, type:'radiation', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="49" width="28" height="5" rx="2.5" fill="#8A5A3B" transform="rotate(-14 17 51)"/> <rect x="3" y="49" width="28" height="5" rx="2.5" fill="#6F4529" transform="rotate(14 17 51)"/><g transform="translate(8 24) scale(1.1)"><path d="M8 0c4.5 5.5 7 8.5 7 12a7 7 0 0 1-14 0C1 8.5 3.5 5.5 8 0z" fill="#FF6A2B"/><path d="M8 6c2.2 3 3.5 4.6 3.5 6.5a3.5 3.5 0 0 1-7 0C4.5 10.6 5.8 9 8 6z" fill="#FFE27A"/></g> <g stroke="#FFB020" stroke-width="2.6" fill="none" stroke-linecap="round" opacity=".85"> <path d="M30 28a12 12 0 0 1 0 20"/><path d="M36 24a16 16 0 0 1 0 28"/></g> <circle cx="55" cy="36" r="8" fill="#E0A874"/> <path d="M55 28a8 8 0 0 0 0 16z" fill="#FFD7A8"/></svg>',
    text:'모닥불 앞에 서면 불을 향한 얼굴이 뜨겁다.',
    short:'모닥불 앞에 서면 얼굴이 뜨거워요',
    why:'모닥불의 열이 물질의 도움 없이 직접 얼굴로 이동해요. 불을 향한 쪽만 뜨겁고 등은 덜 뜨거운 것도 이 때문이에요.'},
-  {id:11, type:'radiation', emoji:'📷',
+  {id:11, type:'radiation', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><defs> <radialGradient id="thBody" cx="50%" cy="34%" r="62%"> <stop offset="0" stop-color="#FFF3B0"/><stop offset=".3" stop-color="#FFC61E"/> <stop offset=".55" stop-color="#FF6A2B"/><stop offset=".74" stop-color="#D62B72"/> <stop offset=".9" stop-color="#5E3AC4"/><stop offset="1" stop-color="#16357F"/></radialGradient> <linearGradient id="thScale" x1="0" y1="1" x2="0" y2="0"> <stop offset="0" stop-color="#0A1F7A"/><stop offset=".3" stop-color="#1FA8C7"/> <stop offset=".55" stop-color="#57D45A"/><stop offset=".78" stop-color="#FFD23F"/> <stop offset="1" stop-color="#FF3B2F"/></linearGradient> <clipPath id="thClip"><rect x="3" y="7" width="44" height="50" rx="5"/></clipPath></defs> <rect x="3" y="7" width="44" height="50" rx="5" fill="#0A1F7A"/> <g clip-path="url(#thClip)"> <ellipse cx="25" cy="23" rx="11" ry="12.5" fill="url(#thBody)"/> <path d="M3 57c1.5-11.5 9-17.5 22-17.5S45.5 45.5 47 57z" fill="url(#thBody)"/></g> <rect x="3" y="7" width="44" height="50" rx="5" fill="none" stroke="#CFE3FF" stroke-width="2"/> <rect x="52" y="9" width="8" height="46" rx="2.5" fill="url(#thScale)" stroke="#CFE3FF" stroke-width="1.5"/> </svg>',
    text:'열화상 카메라로 사람의 체온을 측정한다.',
    short:'열화상 카메라로 체온을 재요',
    why:'사람의 몸을 비롯한 모든 물체는 복사로 열을 내보내요. 열화상 카메라는 이 열을 감지해서 온도를 색으로 보여 줘요.'},
-  {id:12, type:'radiation', emoji:'🌳',
+  {id:12, type:'radiation', emoji:'<svg class="ic" viewBox="0 0 64 64" aria-hidden="true"><g stroke="#FFC61E" stroke-width="2.4" stroke-linecap="round"><path d="M50 1v4M50 23v-4M37 12h4M63 12h-4M41 3l2.5 2.5M59 21l-2.5-2.5M59 3l-2.5 2.5M41 21l2.5-2.5"/></g> <circle cx="50" cy="12" r="7.5" fill="#FFD23F"/> <path d="M50 20L63 51H37z" fill="#FFD23F" opacity=".32"/> <rect x="2" y="51" width="60" height="9" rx="4" fill="#6B5B8A"/> <ellipse cx="19" cy="52" rx="15" ry="4.5" fill="#120A2A" opacity=".72"/> <rect x="16" y="33" width="6" height="19" rx="2" fill="#8A5A3B"/> <circle cx="19" cy="25" r="12" fill="#3FA857"/> <circle cx="10" cy="30" r="7" fill="#4CC46A"/><circle cx="28" cy="30" r="7" fill="#4CC46A"/></svg>',
    text:'그늘에 있다가 햇볕 아래로 나오면 더 따뜻하다.',
    short:'그늘보다 햇볕 아래가 더 따뜻해요',
    why:'햇볕 아래에서는 태양의 열이 복사로 몸에 직접 도달해요. 그늘에서는 나무나 건물이 이 열을 가려요.'}
@@ -560,6 +562,12 @@ function show(id){
 
 /* ---------------- 1. 카드 공부 ---------------- */
 const seen = new Set();
+let ICN = 0;
+function icon(svg){
+  const n = ++ICN;
+  return svg.replace(/id="([^"]+)"/g, (m,a)=>`id="${a}-${n}"`)
+            .replace(/url\(#([^)]+)\)/g, (m,a)=>`url(#${a}-${n})`);
+}
 const PAGE_SIZE = 4;
 function renderCards(){
   const tabsEl = $('#pageTabs'), pagesEl = $('#cardPages');
@@ -589,7 +597,7 @@ function renderCards(){
       el.style.setProperty('--c', `var(${T.v})`);
       el.dataset.id = c.id;
       el.innerHTML = `<div class="card-inner">
-          <div class="face front"><span class="emoji" aria-hidden="true">${c.emoji}</span><p>${c.text}</p><span class="hint">눌러서 정답 보기</span></div>
+          <div class="face front"><span class="emoji" aria-hidden="true">${icon(c.emoji)}</span><p>${c.text}</p><span class="hint">눌러서 정답 보기</span></div>
           <div class="face back"><span class="type">${T.name}</span><p>${c.why}</p></div>
         </div>`;
       const flip = ()=>{
@@ -761,7 +769,7 @@ function heat(p){
 function spawn(n){
   const el = document.createElement('div');
   el.className = 'note';
-  el.innerHTML = `<div class="note-body"><span class="e" aria-hidden="true">${n.card.emoji}</span><span>${n.card.short}</span></div>`;
+  el.innerHTML = `<div class="note-body"><span class="e" aria-hidden="true">${icon(n.card.emoji)}</span><span>${n.card.short}</span></div>`;
   track.appendChild(el);
   n.el = el; n.body = el.firstElementChild; n.h = el.offsetHeight; n.spawned = true;
 }
@@ -917,7 +925,7 @@ function renderResult(){
     const T = TYPES[card.type];
     const mine = picks.map(p=>p ? `${TYPES[p].name} 선택` : '시간 안에 못 누름').join(', ');
     return `<li class="rv" style="--c:var(${T.v})">
-        <span class="emoji" aria-hidden="true">${card.emoji}</span>
+        <span class="emoji" aria-hidden="true">${icon(card.emoji)}</span>
         <div><p class="t">${card.text}</p>
         <p class="a">${mine}${picks.length>1?` (${picks.length}번 틀림)`:''}. 정답은 <b>${T.name}</b></p>
         <p class="w">${card.why}</p></div></li>`;
